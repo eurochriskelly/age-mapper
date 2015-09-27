@@ -14,7 +14,7 @@ var spotData = [
         { lon : 2, lat : 3, epoch : -1000 },
         { lon : 5, lat : 1, epoch : -2000 },
         { lon : 5, lat : 1, epoch : -8000 },
-        { lon : 50, lat : -31, epoch : -12000 },
+        { lon : 50, lat : -31, epoch : -12000 }
     ]
 ];
 
