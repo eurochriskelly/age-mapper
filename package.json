@@ -1,0 +1,30 @@
+{
+  "name": "age-mapper",
+  "version": "0.0.1",
+  "description": "Mapper for the ages",
+  "main": "app.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eurochriskelly/age-mapper.git"
+  },
+  "keywords": [
+    "ettools"
+  ],
+  "author": "C.Kelly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eurochriskelly/age-mapper/issues"
+  },
+  "homepage": "https://github.com/eurochriskelly/age-mapper#readme",
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "nedb": "^1.2.1",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
+}
