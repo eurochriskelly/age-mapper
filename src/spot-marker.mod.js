@@ -10,22 +10,18 @@ var SpotMarker = function () {
     "use strict";
 
     return {
-        getTimeSlice : getTimeSlice
+        genTimeSlice : genTimeSlice
         , createMark : createMark
         , addMarkEra : addMarkEra
-        , printIt : printIt
     };
 
-    function printIt (id) {
-        db.findOne({_id:id}, function (e, rec) {
-            console.log(rec);
-        });
+    function getTimeSlice (age) {
+        // Generate a slice of spot mark from spot mark information
+        // 1. check if it exists
+        // 2. otherwise generated
+        // 3. return
     }
     function genTimeSlice (age) {
-        // Generate a slice of spot mark from spot mark information
-
-    }
-    function getTimeSlice (age) {
         return new Promise(function (resolve, reject) {
             db.find({type: 'spot-mark'}, function (e, spotMarks) {
                 if (e) return reject(e);
@@ -33,17 +29,42 @@ var SpotMarker = function () {
                     return sm.positionTrack.length > 1;
                 });
                 if (!spotMarks.length) return reject('No data to slice');
+
                 var relevantMarks = spotMarks
-                    .filter(function (sm) {
-                        var epochs = _.pluck(sm.positionTrack, 'epoch')
-                            .sort()
-                            .reduce(function (p, n) {
-                                return age >= p && age <= n
-                                    ? [p, n]
+                    .map(function (sm) {
+                        sm.epochs = _.pluck(sm.positionTrack, 'epoch')
+                            .sort(function (a,b) { return a - b;})
+                            .filter(function (epoch, i, lst) {
+                                var greaterThanPrev = age >= (i ? lst[i-1] : -Infinity) && age < epoch
+                                var lessThanNext = i !== lst.length-1
+                                    ? ((age >= epoch) && (age < lst[i+1]))
                                     : false;
-                            }, -100000000);
-                        console.log(epochs);
+                                return greaterThanPrev || lessThanNext;
+                            });
+                        return sm;
                     })
+                    .filter(function agesThatSpan (sm) {
+                        return sm.epochs.length === 2;
+                    })
+                    .map(function removeIrrelevantMarks (sm) {
+                        var p1 = _.findWhere(sm.positionTrack, { epoch : sm.epochs[0] });
+                        var p2 = _.findWhere(sm.positionTrack, { epoch : sm.epochs[1] });
+                        var factor = age/ (sm.epochs[1]-sm.epochs[0]);
+                        return [
+                            { lat : p1.lat, lon : p1.lon, factor: factor, id : sm._id },
+                            { lat : p2.lat, lon : p2.lon }
+                        ]
+                    })
+                    .map(function inferPoint (segment) {
+                        var factor = segment[0].factor;
+                        return {
+                            id : segment[0].id,
+                            lon : segment[0].lon + ((segment[1].lon - segment[0].lon) * factor),
+                            lat : segment[0].lat + ((segment[1].lat - segment[0].lat) * factor)
+                        };
+                    });
+                resolve(relevantMarks);
+
             });
         });
     }

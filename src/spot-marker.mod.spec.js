@@ -5,13 +5,14 @@ var spotMarker = require('./spot-marker.mod');
 
 var spotData = [
     [
-        { lon : 2, lat : 3, epoch : 2000 },
-        { lon : 2, lat : 4, epoch : -100 },
-        { lon : 3, lat : 3, epoch : -600 }
+        { lon : -28, lat : -10, epoch : 2800 },
+        { lon : -30, lat : -12, epoch : 2000 },
+        { lon : -35, lat : -15, epoch : -100 },
+        { lon : -38, lat : -18, epoch : -600 }
     ],
     [
-        { lon : 2, lat : 3, epoch : 4000 },
-        { lon : 2, lat : 3, epoch : -1000 },
+        { lon : 2, lat : 25, epoch : 2000 },
+        { lon : 20, lat : 35, epoch : -1000 },
         { lon : 5, lat : 1, epoch : -2000 },
         { lon : 5, lat : 1, epoch : -8000 },
         { lon : 50, lat : -31, epoch : -12000 }
@@ -27,10 +28,8 @@ spotData.forEach(function (spots) {
         if (!n) {
             spotMarker.createMark(spots[n])
                 .then(function (data) {
-                    // console.log('1');
                     spotId = data;
                     lastSpotId = spotId;
-                    console.log(data);
                     insertNext(n+1);
                 });
         } else {
@@ -43,15 +42,31 @@ spotData.forEach(function (spots) {
     }
 });
 
-
-
 setTimeout(function (d) {
-    //spotMarker.printIt(lastSpotId);
-    spotMarker.genTimeSlice(400)
-        .then(function (slice) {
-            console.log(slice);
-        });
+    var eras = [-50000, -2000, -1000, -500, -100, 0, 200, 300, 400, 800, 1200, 2500, 10000];
 
+    var sliceData = [];
+    var remaining = eras.length;
+
+
+    eras.forEach(function (era) {
+        spotMarker.genTimeSlice(era)
+            .then(function (slice) {
+                console.log(slice)
+                slice.era = era;
+                sliceData.push(slice);
+                if (!--remaining) {
+                    console.log('==============================');
+                    sliceData.forEach(function (sl) {
+                        console.log(
+                            (sl.era + '        ').substring(0, 8) +
+                            sl
+                            .sort()
+                            .map(function (s) {return s.id})
+                            .join(' ')
+                        );
+                    });
+                }
+            });
+    });
 }, 2000);
-
-
