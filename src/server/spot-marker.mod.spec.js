@@ -3,21 +3,6 @@
  */
 var spotMarker = require('./spot-marker.mod');
 
-var spotData = [
-    [
-        { lon : -28, lat : -10, epoch : 2800 },
-        { lon : -30, lat : -12, epoch : 2000 },
-        { lon : -35, lat : -15, epoch : -100 },
-        { lon : -38, lat : -18, epoch : -600 }
-    ],
-    [
-        { lon : 2, lat : 25, epoch : 2000 },
-        { lon : 20, lat : 35, epoch : -1000 },
-        { lon : 5, lat : 1, epoch : -2000 },
-        { lon : 5, lat : 1, epoch : -8000 },
-        { lon : 50, lat : -31, epoch : -12000 }
-    ]
-];
 
 var lastSpotId;
 spotData.forEach(function (spots) {

@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/eurochriskelly/age-mapper#readme",
   "dependencies": {
+    "drift-slicer" : "file:../drift-slicer",
+    "spot-marker" : "file:../spot-marker",
+    "koa": "^1.0.0",
     "lodash": "^3.10.1",
     "nedb": "^1.2.1",
     "q": "^1.4.1"
